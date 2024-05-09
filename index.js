@@ -149,6 +149,29 @@ async function run() {
       res.send(result);
     })
 
+    app.get('/menu/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) }
+      const result = await menuCollection.findOne(query);
+      res.send(result)
+    })
+
+    app.patch('/updateItem/:id', async (req, res) => {
+      const id = req.params.id;
+      const item = req.body;
+      const filter = { _id: new ObjectId(id) }
+      const updateDoc = {
+        $set: {
+          name: item.name,
+          category: item.category,
+          price: item.price,
+          recipe: item.recipe
+        }
+      }
+      const result = await menuCollection.updateOne(filter, updateDoc)
+      res.send(result)
+    })
+
     // Payment Intent
     app.post('/create-payment-intent', async (req, res) => {
       const { price } = req.body;
