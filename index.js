@@ -30,6 +30,7 @@ async function run() {
     const reviewsCollection = client.db("Bistro-Boss").collection("reviews");
     const cartCollection = client.db("Bistro-Boss").collection("carts");
     const paymentCollection = client.db("Bistro-Boss").collection("payment");
+    const bookingCollection = client.db("Bistro-Boss").collection("bookings");
 
     // jwt related api
     app.post('/jwt', async (req, res) => {
@@ -172,6 +173,13 @@ async function run() {
       res.send(result)
     })
 
+    // Booking related API
+    app.post('/bookings', async(req, res) => {
+      const data = req.body;
+      const result = await bookingCollection.insertOne(data);
+      res.send(result);
+    })
+
     // Payment Intent
     app.post('/create-payment-intent', async (req, res) => {
       const { price } = req.body;
@@ -202,6 +210,14 @@ async function run() {
       const deleteResult = await cartCollection.deleteMany(query);
 
       res.send({ paymentResult, deleteResult });
+    })
+
+    // Payment get API
+    app.get('/payments', async(req, res) => {
+      const email = req.query.email;
+      const query = {email: email}
+      const result = await paymentCollection.find(query).toArray();
+      res.send(result)
     })
 
     app.delete('/users/:id', async (req, res) => {
