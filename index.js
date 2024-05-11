@@ -124,6 +124,13 @@ async function run() {
       res.send(cursor);
     })
 
+    app.get('/reviews/singleUser', async(req, res) => {
+      const email = req.query.email;
+      const query = {email: email};
+      const result = await reviewsCollection.find(query).toArray();
+      res.send(result);
+    })
+
     // Carts collection
     app.get('/carts', async (req, res) => {
       const email = req.query.email;
@@ -183,6 +190,20 @@ async function run() {
     app.post('/bookings', async(req, res) => {
       const data = req.body;
       const result = await bookingCollection.insertOne(data);
+      res.send(result);
+    })
+
+    app.get('/bookings', async(req, res) => {
+      const email = req.query.email;
+      const query = {email: email};
+      const result = await bookingCollection.find(query).toArray();
+      res.send(result);
+    })
+
+    app.delete('/bookings/:id', async(req, res) => {
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await bookingCollection.deleteOne(query);
       res.send(result);
     })
 
